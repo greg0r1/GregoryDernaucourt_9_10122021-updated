@@ -38,7 +38,7 @@ export default class {
               try {
                 return {
                   ...doc,
-                  date: doc.data().date,
+                  date: doc.date,
                   // date: formatDate(doc.date),
                   status: formatStatus(doc.status)
                 }
