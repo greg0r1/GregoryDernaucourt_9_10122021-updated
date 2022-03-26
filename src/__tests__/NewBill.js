@@ -10,10 +10,11 @@ import { ROUTES } from "../constants/routes.js"
 import mockStore from "../__mocks__/store"
 
 // import "../css/bills.css"
+jest.mock("../app/store", () => mockStore)
 
 
 describe("Given I am connected as an employee", () => {
-  it("When I am on NewBill Page, I should be able to send a file", () => {
+  test("When I am on NewBill Page, I should be able to send a file", () => {
     const html = NewBillUI()
     document.body.innerHTML = html
     Object.defineProperty(window, 'localStorage', { value: localStorageMock })
@@ -51,7 +52,7 @@ describe("Given I am connected as an employee", () => {
     expect(handleChangeFile).toHaveBeenCalled()
   })
 
-  it("When I am on NewBill Page, the file should not been sent if it has the wrong extension", () => {
+  test("When I am on NewBill Page, the file should not been sent if it has the wrong extension", () => {
     const html = NewBillUI()
     document.body.innerHTML = html
     Object.defineProperty(window, 'localStorage', { value: localStorageMock })
@@ -111,96 +112,49 @@ describe("Given I am connected as an employee", () => {
 
   })
 
-  // Test d'intégration POST new bill
-  // describe("When I post a new bill", () => {
-  //   //Date remplie
-  //   test('I should have a valid date', () => {
-  //     const html = NewBillUI()
-  //     document.body.innerHTML = html
-  //     const datepicker = screen.getByTestId('datepicker')
-  //     expect(datepicker).not.toBeNull()
-  //     expect(datepicker.getAttributeNames().find(e => e == 'required')).not.toBeUndefined()
-  //   })
+  //Test d'intégration POST new bill
+  describe("When I valid bill form", () => {
+    test('Then a bill is created', async () => {
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname })
+      }
 
-  //   //Un montant
-  //   test('I should have a number as amount ', () => {
-  //     const html = NewBillUI()
-  //     document.body.innerHTML = html
-  //     const amount = screen.getByTestId('amount')
-  //     expect(amount).not.toBeNull()
-  //     expect(amount.getAttributeNames().find(e => e == 'required')).not.toBeUndefined()
-  //   })
-
-  //   //Une tva (pourcentage)
-  //   test('I should have a number as VAT', () => {
-  //     const pct = screen.getByTestId('pct')
-  //     expect(pct).not.toBeNull()
-  //     expect(pct.getAttributeNames().find(e => e == 'required')).not.toBeUndefined()
-  //   })
-
-  //   //Un fichier à envoyer
-  //   test('I should have a valid file', () => {
-  //     const file = screen.getByTestId('file')
-  //     expect(file).not.toBeNull()
-  //     expect(file.getAttributeNames().find(e => e == 'required')).not.toBeUndefined()
-  //   })
-
-  // })
-
-
-  //Test d'intégration POST new bill 2
-  describe("Given I am a user connected as en Employee", () => {
-    describe("When I valid bill form", () => {
-      test('Then a bill is created', async () => {
-        const onNavigate = (pathname) => {
-          document.body.innerHTML = ROUTES({ pathname })
-        }
-
-        document.body.innerHTML = NewBillUI()
-        const newBill = new NewBill({
-          document, onNavigate, store: null, localStorage: window.localStorage
-        })
-
-        const submit = screen.queryByTestId('form-new-bill')
-        const billTest = {
-
-          name: "testing",
-          date: "2001-04-15",
-          amount: 400,
-          type: "Hôtel et logement",
-          commentary: "séminaire billed",
-          pct: 25,
-          vat: 12,
-          commentary: "C'est un test",
-          fileName: "testing",
-          fileUrl: 'testing.jpg'
-        }
-
-
-        const handleSubmit = jest.fn((e) => newBill.handleSubmit(e))
-
-        newBill.createBill = (newBill) => newBill
-        document.querySelector(`select[data-testid="expense-type"]`).value = billTest.type
-        document.querySelector(`input[data-testid="expense-name"]`).value = billTest.name
-        document.querySelector(`input[data-testid="datepicker"]`).value = billTest.date
-        document.querySelector(`input[data-testid="amount"]`).value = billTest.amount
-        document.querySelector(`input[data-testid="vat"]`).value = billTest.vat
-        document.querySelector(`input[data-testid="pct"]`).value = billTest.pct
-        document.querySelector(`textarea[data-testid="commentary"]`).value = billTest.commentary
-        newBill.fileUrl = billTest.fileUrl
-        newBill.fileName = billTest.fileName
-
-        submit.addEventListener('click', handleSubmit)
-
-        fireEvent.click(submit)
-
-        expect(handleSubmit).toHaveBeenCalled()
-
+      document.body.innerHTML = NewBillUI()
+      const newBill = new NewBill({
+        document, onNavigate, store: null, localStorage: window.localStorage
       })
+
+      const submit = screen.queryByTestId('form-new-bill')
+
+      const mockbill = mockStore.bills = jest.fn().mockImplementationOnce(() => {
+        return {
+          update: jest.fn().mockResolvedValue()
+        }
+      })
+
+      const handleSubmit = jest.fn((e) => newBill.handleSubmit(e))
+
+      newBill.createBill = (newBill) => newBill
+      document.querySelector(`select[data-testid="expense-type"]`).value = mockbill.type
+      document.querySelector(`input[data-testid="expense-name"]`).value = mockbill.name
+      document.querySelector(`input[data-testid="datepicker"]`).value = mockbill.date
+      document.querySelector(`input[data-testid="amount"]`).value = mockbill.amount
+      document.querySelector(`input[data-testid="vat"]`).value = mockbill.vat
+      document.querySelector(`input[data-testid="pct"]`).value = mockbill.pct
+      document.querySelector(`textarea[data-testid="commentary"]`).value = mockbill.commentary
+      newBill.fileUrl = mockbill.fileUrl
+      newBill.fileName = mockbill.fileName
+
+      submit.addEventListener('click', handleSubmit)
+
+      fireEvent.click(submit)
+
+      expect(handleSubmit).toHaveBeenCalled()
+
     })
   })
 
-  describe("When I navigate to the newbill page, and I want to post an PNG file", () => {
+  describe("When I navigate to the newbill page, and I want to post an JPG file", () => {
     test("Then function handleChangeFile should be called", () => {
       const html = NewBillUI();
       document.body.innerHTML = html;
@@ -208,10 +162,13 @@ describe("Given I am connected as an employee", () => {
         document.body.innerHTML = ROUTES({ pathname })
       }
 
+      const store = {
+        bills: jest.fn().mockImplementation(() => ({ create: jest.fn().mockImplementation(() => ({ then: jest.fn().mockImplementation(() => ({ catch: jest.fn() })) })) }))
+      }
       const newBill = new NewBill({
         document,
         onNavigate,
-        store: mockStore,
+        store: store,
         localStorage: window.localStorage
       });
       const handleChangeFile = jest.fn(newBill.handleChangeFile);
@@ -220,42 +177,10 @@ describe("Given I am connected as an employee", () => {
       file.addEventListener("change", handleChangeFile);
       fireEvent.change(file, {
         target: {
-          files: [new File(["image"], "test.png", { type: "image/png" })]
+          files: [new File(["image"], "test.jpg", { type: "image/jpeg" })]
         }
       });
       expect(handleChangeFile).toHaveBeenCalled();
-    });
-  })
-
-  describe("When I navigate to the newbill page, and I want to post an PDF file", () => {
-    test("Then function handleChangeFile should be called", () => {
-      const html = NewBillUI();
-      document.body.innerHTML = html;
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
-
-      const newBill = new NewBill({
-        document,
-        onNavigate,
-        store: mockStore,
-        localStorage: window.localStorage
-      });
-
-
-      const file = screen.getByTestId("file");
-
-      const handleChangeFile = jest.fn(newBill.handleChangeFile);
-
-      file.addEventListener("change", handleChangeFile);
-
-      fireEvent.change(file, {
-        target: {
-          files: [new File(["image"], "test.pdf", { type: "image/pdf" })]
-        }
-      });
-      expect(handleChangeFile).toHaveBeenCalled();
-      expect(file.value).toBe('')
-    });
+    })
   })
 })
