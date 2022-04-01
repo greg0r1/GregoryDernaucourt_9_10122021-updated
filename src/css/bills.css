@@ -10,7 +10,7 @@
   border: solid 1px lightgrey;
   border-radius: 5px;
   padding: 50px;
-  min-height: 100vh;
+  min-height: max-content;
 }
 
 .content-header {

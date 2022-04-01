@@ -114,7 +114,7 @@ describe("Given I am connected as an employee", () => {
 
   })
 
-  //Test d'intégration POST new bill
+  //Tests d'intégration POST new bill
   describe("When I valid bill form", () => {
     test('Then a bill is created', async () => {
       const onNavigate = (pathname) => {

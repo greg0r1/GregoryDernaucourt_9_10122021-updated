@@ -1,15 +1,16 @@
 .form-newbill-container {
   width: 100%;
+  max-width: 900px;
 }
 
 .col-half {
-  margin:auto;
+  margin: auto;
   width: 75%;
   margin-top: 16px;
 }
 
 .col-half-row {
-  display:flex;
+  display: flex;
   width: 75%;
   margin-left: 20px;
   margin-top: 16px;
@@ -48,16 +49,35 @@ label {
   margin-top: 50px;
 }
 
-textarea, input, select {
+textarea,
+input,
+select {
   color: #0E5AE5 !important;
   opacity: 0.7 !important;
 }
 
-textarea:focus, input:focus, select:focus {
+textarea:focus,
+input:focus,
+select:focus {
   color: #0E5AE5 !important;
   opacity: 1 !important;
 }
 
 *[placeholder] {
   color: #0E5AE5 !important;
+}
+
+.quit {
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  margin-right: 0;
+  margin-left: auto;
+  border-radius: 100%;
+  background: #105ae5;
+  color: #FFF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: x-large;
 }

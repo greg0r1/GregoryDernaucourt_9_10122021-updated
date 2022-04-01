@@ -8,6 +8,8 @@ export default class NewBill {
     this.store = store
     const formNewBill = this.document.querySelector(`form[data-testid="form-new-bill"]`)
     formNewBill.addEventListener("submit", this.handleSubmit)
+    const quitForm = this.document.querySelector("div.form-newbill-container.content-inner .quit")
+    quitForm.addEventListener('click', this.handleQuit)
     const file = this.document.querySelector(`input[data-testid="file"]`)
     file.addEventListener("change", this.handleChangeFile)
     this.fileUrl = null
@@ -62,6 +64,10 @@ export default class NewBill {
       status: 'pending'
     }
     this.updateBill(bill)
+    this.onNavigate(ROUTES_PATH['Bills'])
+  }
+  handleQuit = e => {
+    e.preventDefault()
     this.onNavigate(ROUTES_PATH['Bills'])
   }
 
