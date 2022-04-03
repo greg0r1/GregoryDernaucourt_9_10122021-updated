@@ -106,14 +106,14 @@ describe("Given I am connected as an employee", () => {
     test(('Then, it should render Loading...'), () => {
       const html = BillsUI({ data: [], loading: true })
       document.body.innerHTML = html
-      expect(screen.getAllByText('Loading...')).toBeTruthy()
+      expect(screen.getAllByText('Loading...')).toBeDefined()
     })
 
     test(('Then, if error, it should render Error page'), () => {
       const error = 'Erreur de connexion internet'
       const html = BillsUI({ data: [], error: error })
       document.body.innerHTML = html
-      expect(screen.getAllByText(error)).toBeTruthy()
+      expect(screen.getAllByText(error)).toBeDefined()
     })
 
     test('Then I click on New Bill and I should navigate to NewBill', () => {
